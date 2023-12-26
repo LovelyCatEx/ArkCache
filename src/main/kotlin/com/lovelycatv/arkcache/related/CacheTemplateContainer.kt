@@ -32,4 +32,9 @@ class CacheTemplateContainer {
     }
 
     private fun <T> isTemplateRegistered(clazz: Class<T>): Boolean = templates.keys.contains(clazz.name)
+
+    @Suppress("UNCHECKED_CAST")
+    fun getAllTemplates(): List<CacheTemplate<*>>
+        = templates.map {it.value} as List<CacheTemplate<*>>
+
 }

@@ -14,7 +14,7 @@ open class SimpleCacheTemplate<T>(
      private var dataSourceProvider: DataSourceProvider<T>,
      private var cacheSourceProvider: CacheSourceProvider<T>,
      private var cacheStorageStrategies: MutableMap<Int, CacheStorageStrategy<T>>
-) : CacheTemplate<T> {
+) : CacheTemplate<T>() {
     fun getStrategyById(strategyId: Int) = this.cacheStorageStrategies[strategyId] ?: throwWhenStrategyIsNull(strategyId)
 
     override fun getOne(strategyId: Int, vararg args: Any): T?
@@ -31,16 +31,26 @@ open class SimpleCacheTemplate<T>(
     override fun setOne(strategy: CacheStorageStrategy<T>, value: T?) {
         with(strategy.key.getKeyForSetValue(value ?: throw NullPointerException("Cache going to be set cannot be null"))) {
             cacheSourceProvider.set(this, value)
+            super.keys.add(this)
         }
     }
 
-    fun removeCache(strategyId: Int, vararg args: Any) {
+    override fun removeCache(strategyId: Int, vararg args: Any) {
         removeCache(getStrategyById(strategyId), *args)
     }
 
-    fun removeCache(strategy: CacheStorageStrategy<T>, vararg args: Any) {
-        cacheSourceProvider.remove(strategy.key.getKey(*args))
+    override fun removeCache(strategy: CacheStorageStrategy<T>, vararg args: Any) {
+        with(strategy.key.getKey(*args)) {
+            cacheSourceProvider.remove(this)
+            super.keys.remove(this)
+        }
     }
+
+    override fun getDataSourceProvider(): DataSourceProvider<T>
+            = dataSourceProvider
+
+    override fun getCacheSourceProvider(): CacheSourceProvider<T>
+            = cacheSourceProvider
 
     private fun throwWhenStrategyIsNull(strategyId: Int): Nothing {
         throw NullPointerException("Cannot find strategy $strategyId")

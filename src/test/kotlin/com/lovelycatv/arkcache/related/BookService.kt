@@ -40,6 +40,7 @@ class BookService {
                         strategy: CacheStorageStrategy<Iterable<Book?>>,
                         vararg args: Any?
                     ): Iterable<Book?>? {
+                        Thread.sleep(10)
                         return when (strategy.id) {
                             1 -> bookDAO.list()
                             2 -> bookDAO.byId(args[0] as Long).toList()

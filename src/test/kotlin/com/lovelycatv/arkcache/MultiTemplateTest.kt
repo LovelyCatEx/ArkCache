@@ -45,4 +45,27 @@ class MultiTemplateTest {
             println(it)
         }
     }
+
+    @Order(5)
+    @Test
+    fun clearAllCache() {
+        println("===== Reading cache 1")
+        var s = System.currentTimeMillis()
+        println(bookService.bookMultiCacheTemplate().getExactlyOne(2, 1L)).also { println(System.currentTimeMillis() - s) }
+
+        println("===== Remove all cache")
+        bookService.bookMultiCacheTemplate().keys().forEach {
+            println("key: $it")
+        }
+        bookService.bookMultiCacheTemplate().removeAllCache()
+
+        println("===== Reading cache 1 Again")
+        s = System.currentTimeMillis()
+        println(bookService.bookMultiCacheTemplate().getExactlyOne(2, 1L)).also { println(System.currentTimeMillis() - s) }
+
+        println("===== Reading cache 1 Again...")
+        s = System.currentTimeMillis()
+        println(bookService.bookMultiCacheTemplate().getExactlyOne(2, 1L)).also { println(System.currentTimeMillis() - s) }
+
+    }
 }

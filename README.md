@@ -30,12 +30,16 @@ Return the cache object from cache source directly
 
 Maven
 ```xml
-
+<dependency>
+    <groupId>com.lovelycatv</groupId>
+    <artifactId>ark-cache</artifactId>
+    <version>1.0.1-RELEASE</version>
+</dependency>
 ```
 
 Gradle
 ```groovy
-
+implementation 'com.lovelycatv:ark-cache:1.0.1-RELEASE'
 ```
 
 To start with, here are the objects may be used in the following examples
